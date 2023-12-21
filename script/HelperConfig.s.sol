@@ -8,11 +8,15 @@ import {MockV3Aggregator} from "../test/mock/MockV3Aggregator.sol";
 contract HelperConfig is Script {
     NetworkConfig public currentConfig;
 
+    uint8 public constant ETH_DECIMALS = 8;
+    int256 public constant INITIAL_PRICE = 2000e8;
+    uint256 public constant SEPOLIA_CHAINID = 11155111;
+
     constructor() {
-        if (block.chainid == 11155111) {
+        if (block.chainid == SEPOLIA_CHAINID) {
             currentConfig = getSepoliaEthConfig();
         } else {
-            currentConfig = getAnvillEthConfig();
+            currentConfig = getOrCreateAnvillEthConfig();
         }
     }
 
@@ -30,9 +34,18 @@ contract HelperConfig is Script {
         });
     }
 
-    function getAnvillEthConfig() public returns (NetworkConfig memory config) {
+    function getOrCreateAnvillEthConfig()
+        public
+        returns (NetworkConfig memory config)
+    {
+        if (currentConfig.priceFeed != address(0)) {
+            return currentConfig;
+        }
         vm.startBroadcast();
-        MockV3Aggregator aggregator = new MockV3Aggregator(8, 2000e8);
+        MockV3Aggregator aggregator = new MockV3Aggregator(
+            ETH_DECIMALS,
+            INITIAL_PRICE
+        );
         vm.stopBroadcast();
 
         config = NetworkConfig({priceFeed: address(aggregator)});
