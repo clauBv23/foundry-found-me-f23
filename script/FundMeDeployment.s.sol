@@ -5,10 +5,15 @@ pragma solidity ^0.8.19;
 import {Script} from "forge-std/Script.sol";
 import {FundMe} from "../src/FundMe.sol";
 
+import {HelperConfig} from "./HelperConfig.s.sol";
+
 contract FundMeDeployment is Script {
-    function run() external {
+    function run() external returns (FundMe fundMe) {
+        HelperConfig config = new HelperConfig();
+        address priceFeed = config.currentConfig();
+
         vm.startBroadcast();
-        new FundMe(address(0));
+        fundMe = new FundMe(priceFeed);
         vm.stopBroadcast();
     }
 }
