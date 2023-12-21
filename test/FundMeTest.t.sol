@@ -6,7 +6,13 @@ import {Test} from "forge-std/Test.sol";
 import {FundMe} from "../src/FundMe.sol";
 
 contract FundMeTest is Test {
-    function setUp() external {}
+    FundMe fundMe;
 
-    function testDemo() public {}
+    function setUp() external {
+        fundMe = new FundMe(address(0));
+    }
+
+    function testMinimumDolarIsFive() public {
+        assertEq(fundMe.MINIMUM_USD(), 5e18);
+    }
 }
