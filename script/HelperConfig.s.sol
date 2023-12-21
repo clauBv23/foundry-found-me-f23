@@ -32,12 +32,9 @@ contract HelperConfig is Script {
 
     function getAnvillEthConfig() public returns (NetworkConfig memory config) {
         vm.startBroadcast();
-        MockV3Aggregator aggregator = new MockV3Aggregator(
-            18,
-            2000000000000000000
-        );
+        MockV3Aggregator aggregator = new MockV3Aggregator(8, 2000e8);
+        vm.stopBroadcast();
 
         config = NetworkConfig({priceFeed: address(aggregator)});
-        vm.stopBroadcast();
     }
 }
