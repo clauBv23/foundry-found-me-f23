@@ -24,28 +24,16 @@ contract HelperConfig is Script {
         address priceFeed;
     }
 
-    function getSepoliaEthConfig()
-        public
-        pure
-        returns (NetworkConfig memory config)
-    {
-        config = NetworkConfig({
-            priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306
-        });
+    function getSepoliaEthConfig() public pure returns (NetworkConfig memory config) {
+        config = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
     }
 
-    function getOrCreateAnvillEthConfig()
-        public
-        returns (NetworkConfig memory config)
-    {
+    function getOrCreateAnvillEthConfig() public returns (NetworkConfig memory config) {
         if (currentConfig.priceFeed != address(0)) {
             return currentConfig;
         }
         vm.startBroadcast();
-        MockV3Aggregator aggregator = new MockV3Aggregator(
-            ETH_DECIMALS,
-            INITIAL_PRICE
-        );
+        MockV3Aggregator aggregator = new MockV3Aggregator(ETH_DECIMALS, INITIAL_PRICE);
         vm.stopBroadcast();
 
         config = NetworkConfig({priceFeed: address(aggregator)});
